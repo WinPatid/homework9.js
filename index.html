@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework #9: Array Methods (Full-stack Web Dev)</title>
+    <style>
+        /* CSS สำหรับการออกแบบและสีสัน */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9; /* สีพื้นหลังอ่อน */
+            color: #333;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4a90e2; /* สีน้ำเงินสดใส */
+            text-align: center;
+            border-bottom: 3px solid #4a90e2;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .problem-section {
+            background-color: #e8f0fe; /* พื้นหลังสีฟ้าอ่อนสำหรับแต่ละข้อ */
+            padding: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4a90e2;
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        .result-box {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            white-space: pre-wrap; /* เพื่อให้ข้อความยาวขึ้นบรรทัดใหม่ได้ */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-box strong {
+            color: #d9534f; /* สีแดงสำหรับผลลัพธ์ */
+        }
+        
+        .code-snippet {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🛠️ Homework #9: Array Methods (map, filter, reduce)</h1>
+
+        <div class="problem-section">
+            <h2>1. Numbers Array: `const numbers = [5, 10, 15, 20, 25];`</h2>
+            <p><strong>โจทย์:</strong> คำนวณเลขยกกำลังสอง, กรองเลขคู่, และหาผลรวม</p>
+            
+            <p>1a. Numbers Squared (map):</p>
+            <div class="result-box" id="result-1a"></div>
+            
+            <p>1b. Even Numbers (filter):</p>
+            <div class="result-box" id="result-1b"></div>
+            
+            <p>1c. Sum of all Numbers (reduce):</p>
+            <div class="result-box" id="result-1c"></div>
+        </div>
+
+        <div class="problem-section">
+            <h2>2. Students Array: `const students = [...]`</h2>
+            <p><strong>โจทย์:</strong> หาชื่อนักศึกษา, กรองนักศึกษาที่ผ่าน (grade >= 70), และหาเกรดเฉลี่ย</p>
+            
+            <p>2a. Student Names (map):</p>
+            <div class="result-box" id="result-2a"></div>
+            
+            <p>2b. Passed Students (filter):</p>
+            <div class="result-box" id="result-2b"></div>
+            
+            <p>2c. Average Grade (reduce):</p>
+            <div class="result-box" id="result-2c"></div>
+        </div>
+        
+        <div class="problem-section">
+            <h2>3. Products Array: `const products = [...]`</h2>
+            <p><strong>โจทย์:</strong> กรองราคา &lt; 100 ➡️ คูณ 2 ➡️ หามูลค่ารวม (Chaining)</p>
+            
+            <p>3. Total value of filtered and doubled products:</p>
+            <div class="result-box" id="result-3"></div>
+            <p>ขั้นตอนการทำงาน:</p>
+            <ul>
+                <li><strong>Filter:</strong> สินค้าที่ราคา < 100 คือ Mouse (20), Keyboard (50)</li>
+                <li><strong>Map:</strong> คูณ 2 ได้ [40, 100]</li>
+                <li><strong>Reduce:</strong> ผลรวมคือ 40 + 100 = 140</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // --- ข้อมูลเริ่มต้น ---
+        const numbers = [5, 10, 15, 20, 25];
+        const students = [
+            { id: 1, name: 'Alice', grade: 85 },
+            { id: 2, name: 'Bob', grade: 75 },
+            { id: 3, name: 'Charlie', grade: 95 },
+            { id: 4, name: 'David', grade: 60 }
+        ];
+        const products = [
+            { id: 1, name: 'Laptop', price: 800 },
+            { id: 2, name: 'Mouse', price: 20 },
+            { id: 3, name: 'Keyboard', price: 50 },
+            { id: 4, name: 'Monitor', price: 150 }
+        ];
+
+        // --- ฟังก์ชันสำหรับแสดงผลลัพธ์ใน HTML ---
+        function displayResult(elementId, label, code, result) {
+            const resultBox = document.getElementById(elementId);
+            resultBox.innerHTML = `
+                <span class="code-snippet">${code}</span>
+                <p><strong>${label}:</strong> ${JSON.stringify(result)}</p>
+            `;
+        }
+
+        // ----------------------------------------------------
+        //                       ข้อ 1: Numbers
+        // ----------------------------------------------------
+
+        // 1a. map() - Squared Numbers
+        const code1a = 'numbers.map(number => number * number)';
+        const squaredNumbers = numbers.map(number => number * number);
+        displayResult('result-1a', 'Result', code1a, squaredNumbers);
+
+        // 1b. filter() - Even Numbers
+        const code1b = 'numbers.filter(number => number % 2 === 0)';
+        const evenNumbers = numbers.filter(number => number % 2 === 0);
+        displayResult('result-1b', 'Result', code1b, evenNumbers);
+
+        // 1c. reduce() - Sum of all Numbers
+        const code1c = 'numbers.reduce((sum, num) => sum + num, 0)';
+        const sumOfNumbers = numbers.reduce((sum, num) => sum + num, 0);
+        displayResult('result-1c', 'Result', code1c, sumOfNumbers);
+
+
+        // ----------------------------------------------------
+        //                       ข้อ 2: Students
+        // ----------------------------------------------------
+
+        // 2a. map() - Student Names
+        const code2a = 'students.map(student => student.name)';
+        const studentNames = students.map(student => student.name);
+        displayResult('result-2a', 'Result', code2a, studentNames);
+
+        // 2b. filter() - Passed Students
+        const code2b = 'students.filter(student => student.grade >= 70)';
+        const passedStudents = students.filter(student => student.grade >= 70);
+        // แปลงผลลัพธ์เป็น string ที่อ่านง่าย
+        const passedStudentsString = passedStudents.map(s => `${s.name} (${s.grade})`).join(', ');
+        displayResult('result-2b', 'Passed Students List', code2b, passedStudentsString);
+
+        // 2c. reduce() - Average Grade
+        const totalGrade = students.reduce((sum, student) => sum + student.grade, 0);
+        const averageGrade = totalGrade / students.length;
+        const code2c = `(students.reduce((sum, s) => sum + s.grade) / students.length)`;
+        displayResult('result-2c', 'Average Grade (toFixed(2))', code2c, averageGrade.toFixed(2));
+
+
+        // ----------------------------------------------------
+        //                       ข้อ 3: Products (Chaining)
+        // ----------------------------------------------------
+
+        // filter() -> map() -> reduce() ในคำสั่งเดียว
+        const code3 = `products
+    .filter(product => product.price < 100)
+    .map(product => product.price * 2)
+    .reduce((sum, doubledPrice) => sum + doubledPrice, 0)`;
+
+        const totalValueBelow100 = products
+            .filter(product => product.price < 100)
+            .map(product => product.price * 2)
+            .reduce((sum, doubledPrice) => sum + doubledPrice, 0);
+
+        displayResult('result-3', 'Total Calculated Value', code3, totalValueBelow100);
+
+    </script>
+
+</body>
+</html>
